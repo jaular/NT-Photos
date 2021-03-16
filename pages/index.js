@@ -1,65 +1,55 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { getCuratedPhotos } from "../lib/api";
+import Seo from "@/components/Seo";
+import Grid from "@/components/Grid";
+import SearchBox from "@/components/SearchBox";
+import Pagination from "@/components/Pagination";
+import NotFound from "@/components/NotFound";
 
-export default function Home() {
+export default function Home({ data, numberPage }) {
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
+      <Seo
+        siteTitle="NT Photos"
+        title="Latest photos"
+        description="Free high-resolution images using the official Unsplash API"
+      />
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      <div>
+        <SearchBox />
+      </div>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+      <section>
+        <h2 className="my-8 text-2xl font-bold text-contrast-lower sm:text-3xl">
+          Latest photos
+        </h2>
+        {data.length > 0 ? (
+          <Grid data={data} />
+        ) : (
+          <NotFound text="Sorry! There are no photos" homeButton={false} />
+        )}
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+        <Pagination numberPage={numberPage} />
+      </section>
+    </>
+  );
+}
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+export async function getServerSideProps({ query }) {
+  let data;
+  let numberPage;
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+  try {
+    numberPage = Number(query.page) || 1;
+    const url = `https://api.unsplash.com/photos?page=${numberPage}&per_page=10`;
+    data = await getCuratedPhotos(url);
+  } catch (error) {
+    data = [];
+  }
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+  return {
+    props: {
+      data,
+      numberPage,
+    },
+  };
 }
