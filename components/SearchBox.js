@@ -11,6 +11,7 @@ export default function SearchBox() {
       const slug = encodeURIComponent(
         inputValue.split(" ").join("-").toLocaleLowerCase()
       );
+      setInputValue("");
       router.push(`/s/photos/${slug}`);
     }
   };
