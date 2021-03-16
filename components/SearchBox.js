@@ -7,11 +7,11 @@ export default function SearchBox() {
 
   const handleSubmit = async (e) => {
     await e.preventDefault();
+    setInputValue("");
     if (inputValue.trim().length > 0) {
       const slug = encodeURIComponent(
         inputValue.split(" ").join("-").toLocaleLowerCase()
       );
-      setInputValue("");
       router.push(`/s/photos/${slug}`);
     }
   };
