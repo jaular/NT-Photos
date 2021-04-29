@@ -40,7 +40,7 @@ export async function getServerSideProps({ query }) {
 
   try {
     numberPage = Number(query.page) || 1;
-    const url = `https://api.unsplash.com/photos?page=${numberPage}&per_page=10`;
+    const url = `https://api.unsplash.com/photos?page=${numberPage}&per_page=8`;
     data = await getCuratedPhotos(url);
   } catch (error) {
     data = [];

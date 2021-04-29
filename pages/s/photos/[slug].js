@@ -62,7 +62,7 @@ export async function getServerSideProps({ params, query }) {
   try {
     numberPage = Number(query.page) || 1;
     const search = params.slug.split("-").join(" ");
-    const url = `https://api.unsplash.com/search/photos?page=${numberPage}&per_page=10&query=${encodeURIComponent(
+    const url = `https://api.unsplash.com/search/photos?page=${numberPage}&per_page=8&query=${encodeURIComponent(
       search
     )}`;
     data = await getQueryPhotos(url);
